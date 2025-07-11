@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="CoffeeCup HTML Editor (www.coffeecup.com)">
+    <meta name="dcterms.created" content="Mo, 23 Okt 2017 16:44:47 GMT">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+	<meta name="viewport" content="user-scalable-no, width=device-width">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<link rel="apple-touch-icon" href="iconbudget.png" sizes="120x120">
+	<link href="startup.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <title>budget</title>
+
+
+<style type="text/css">
+ *{
+ margin:0px;
+ padding:0px;
+  }
+.clearer{
+clear:both;
+}
+#mainframe{
+	width:640px;
+	height:1096px;
+background-color:green;
+color:white;
+text-align:center;
+	 }
+#selected{
+width: 580px;
+padding-top:50px;
+margin-left:30px;
+border-bottom:2px solid white;
+padding-bottom:30px;
+}
+.wuerfel{
+width:80px;
+display: inline-block;
+margin-right:15px;
+margin-left:15px;
+margin-bottom:20px;
+border:1px solid green;
+}
+.wuerfel:hover{
+
+}
+.wuerfel:active{
+
+}
+#try{
+height:300px;
+width: 580px;
+margin-left:30px;
+padding-top:20px;
+}
+#gewuerfelt{
+width:360px;
+float:left;
+}
+#button{
+width:200px;
+height:180px;
+float:left;
+}
+#go{
+width:100%;
+height:100%;
+font-size:30pt;
+}
+#ergebnisse{
+height:auto;
+width: 580px;
+margin-left:30px;
+padding-top:20px;
+color:white;
+}
+#tabelle{
+width:100%;
+font-size:26pt;
+text-align:right;
+border-collapse:collapse;
+}
+#tabelle td{
+height:50px;
+}
+.erg{
+width:30%;
+text-align:center;
+}
+.art{
+border-right:1px solid white;
+padding-right:15px;
+}
+#ll{
+border-top:1px solid white;
+}
+.vorschlag{
+width:70%;
+font-size:18pt;
+}
+</style>
+<script type="text/javascript">
+var wcount=1;
+var found=0;
+var ausg=0;
+var min = 1;
+var max = 6;
+var gew=[0,0,0,0,0];
+var sav=[0,0,0,0,0];
+var sel5=[0,0,0,0,0];
+var res=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1];
+var round=0;
+var timecheck=1;
+
+function createList(){
+var i=0;
+for(var t=0;t<5;t++){
+if(gew[t]!=0){
+sel5[i]=gew[t];
+i++;
+}
+if(sav[t]!=0){
+sel5[i]=sav[t];
+i++;
+}
+}
+}
+
+function move(x){
+if(wcount!=0){
+var val=gew[x-1];
+if(val!=0 && ausg<5){
+var s=0;
+while(found==0){
+
+if(sav[s]==0){
+found=1;
+var nmb=s+1;
+var oben=document.getElementById("si"+nmb);
+oben.src="w"+val+".png";
+sav[s]=val;
+var unten=document.getElementById("gi"+x);
+unten.src="empty.png";
+gew[x-1]=0;
+ausg++;
+}
+s++;
+if(s>6){
+found=1;
+}
+}
+found=0;
+}
+}
+
+}
+
+function moveback(x){
+if(wcount!=0){
+var val=sav[x-1];
+if(val!=0 && ausg>0){
+var s=0;
+while(found==0){
+
+if(gew[s]==0){
+found=1;
+var nmb=s+1;
+var oben=document.getElementById("gi"+nmb);
+oben.src="w"+val+".png";
+gew[s]=val;
+var unten=document.getElementById("si"+x);
+unten.src="empty.png";
+sav[x-1]=0;
+ausg--;
+}
+s++;
+if(s>6){
+found=1;
+}
+}
+found=0;
+}
+}
+}
+function rand (min, max) {
+return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function go(){
+if(wcount!=1){
+for(var i=1;i<6;i++){
+var pic=document.getElementById("gi"+i);
+pic.src="empty.png";
+
+
+}
+
+window.setTimeout(aftergreen, 400);
+}
+else{
+aftergreen();
+}
+}
+
+
+function aftergreen(){
+if(wcount<4){
+for(var i=1;i<6;i++){
+if(i<(5-ausg+1)){
+var zf=rand(1,6);
+var pic=document.getElementById("gi"+i);
+pic.src="w"+zf+".png";
+gew[i-1]=zf;
+}
+else{
+var pic=document.getElementById("gi"+i);
+pic.src="empty.png";
+gew[i-1]=0;
+}
+
+}
+
+wcount++;
+}
+if(wcount==4){
+
+document.getElementById("go").disabled = true;
+}
+createList();
+tryit();
+}
+function al(){
+window.alert("test");
+}
+
+function tryit(){
+var db=0;
+var tr=0;
+var qu=0;
+var fu=0;
+var davor=0;
+var strike=0;
+
+for(var za=1;za<7;za++){
+var co=0;
+for(var r=0;r<5;r++){
+if(sel5[r]==za){
+co++;
+}
+}
+if(co!=0){
+if(davor==0){
+davor=1;
+}
+else{
+davor++;
+
+}
+}
+else{
+if(davor>strike){
+strike=davor;
+}
+davor=0;
+}
+
+
+
+
+if(co==2){
+db++;
+}
+if(co==3){
+tr++;
+
+}
+if(co==4){
+qu++;
+}
+if(co==5){
+fu++;
+}
+var text=co*za;
+var t2=text;
+if(text==0){
+text="-";
+}
+if(res[za-1]==-1){
+document.getElementById("e"+za).innerHTML = "<input type='button' class='vorschlag' id='v"+za+"' value='"+text+"' onclick='setit("+za+","+t2+");'>";
+}
+else{
+document.getElementById("e"+za).innerHTML = "<b>"+res[za-1]+"</b>";
+}
+}
+
+var summe=sel5[0]+sel5[1]+sel5[2]+sel5[3]+sel5[4];
+if(res[12]==-1){
+document.getElementById("e13").innerHTML = "<input type='button' class='vorschlag' id='v13' value='"+summe+"' onclick='setit(13,"+summe+");'>";
+}
+else{
+document.getElementById("e13").innerHTML = "<b>"+res[12]+"</b>";
+}
+
+var str1="-";
+var strv1=0;
+var str2="-";
+var strv2=0;
+if(strike>3 || davor>3){
+str1="30"
+strv1=30;
+
+if(strike>4 || davor>4){
+str2="40";
+strv2=40;
+}
+}
+if(res[9]==-1){
+document.getElementById("e10").innerHTML = "<input type='button' class='vorschlag' id='v10' value='"+str1+"' onclick='setit(10,"+strv1+");'>";
+}
+else{
+document.getElementById("e10").innerHTML = "<b>"+res[9]+"</b>";
+}
+
+if(res[10]==-1){
+document.getElementById("e11").innerHTML = "<input type='button' class='vorschlag' id='v11' value='"+str2+"' onclick='setit(11,"+strv2+");'>";
+}
+else{
+document.getElementById("e11").innerHTML = "<b>"+res[10]+"</b>";
+}
+
+var text=summe;
+
+
+
+
+if(tr==1 || qu==1 || fu==1){
+}
+else{
+text="-";
+summe=0;
+}
+if(res[6]==-1){
+document.getElementById("e7").innerHTML = "<input type='button' class='vorschlag' id='v7' value='"+text+"' onclick='setit(7,"+summe+");'>";
+}
+else{
+document.getElementById("e7").innerHTML = "<b>"+res[6]+"</b>";
+}
+
+var text=summe;
+if(qu==1 || fu==1){
+}
+else{
+text="-";
+summe=0;
+}
+
+if(res[7]==-1){
+document.getElementById("e8").innerHTML = "<input type='button' class='vorschlag' id='v8' value='"+text+"' onclick='setit(8,"+summe+");'>";
+}
+else{
+document.getElementById("e8").innerHTML = "<b>"+res[7]+"</b>";
+}
+
+var text="50";
+var kni=50;
+if(fu==1){
+}
+else{
+text="-";
+kni=0;
+}
+
+if(res[11]==-1){
+document.getElementById("e12").innerHTML = "<input type='button' class='vorschlag' id='v12' value='"+text+"' onclick='setit(12,"+kni+");'>";
+}
+else{
+document.getElementById("e12").innerHTML = "<b>"+res[11]+"</b>";
+}
+var text="-";
+var t2=0;
+if(tr==1 && db==1){
+text="25";
+t2=25;
+}
+if(res[8]==-1){
+document.getElementById("e9").innerHTML = "<input type='button' class='vorschlag' id='v9' value='"+text+"' onclick='setit(9,"+t2+");'>";
+}
+else{
+document.getElementById("e9").innerHTML = "<b>"+res[8]+"</b>";
+}
+
+}
+
+function setit(e, p){
+if(res[e-1]==-1){
+res[e-1]=p;
+round++;
+wcount=1;
+found=0;
+ausg=0;
+gew=[0,0,0,0,0];
+sav=[0,0,0,0,0];
+sel5=[0,0,0,0,0];
+
+for(var c=1;c<6;c++){
+document.getElementById("si"+c).src="empty.png";
+document.getElementById("gi"+c).src="empty.png";
+}
+document.getElementById("go").disabled = false;
+document.getElementById("e"+e).innerHTML = "<b>"+res[e-1]+"</b>";
+
+for(var q=1;q<14;q++){
+if(res[q-1]==-1){
+document.getElementById("e"+q).innerHTML = "<b></b>";
+}
+}
+}
+spielab();
+}
+
+function spielab(){
+
+var s1s=0;
+var s2s=0;
+var boni=false;
+for(var b=0;b<6;b++){
+if(res[b]!=-1){
+s1s=s1s+res[b];
+}
+}
+if(s1s>62){
+boni=true;
+s1s=s1s+35;
+}
+document.getElementById("Su1").innerHTML = "<b>"+s1s+"</b>";
+if(boni){
+document.getElementById("Bon").innerHTML = "<b>35</b>";
+}
+
+
+for(var b=6;b<13;b++){
+if(res[b]!=-1){
+s2s=s2s+res[b];
+}
+}
+
+s2s=s2s+s1s;
+
+document.getElementById("Tot").innerHTML = "<b>"+s2s+"</b>";
+
+if(round==13){
+window.alert("Spiel beendet. Punkte gesamt: "+s2s);
+var check = window.confirm('Neues Spiel?'); 
+	if (check == true) {
+		newgame();
+	}
+}
+}
+
+function newgame(){
+round=0;
+for(var c=1;c<6;c++){
+document.getElementById("si"+c).src="empty.png";
+document.getElementById("gi"+c).src="empty.png";
+}
+wcount=1;
+found=0;
+ausg=0;
+gew=[0,0,0,0,0];
+sav=[0,0,0,0,0];
+sel5=[0,0,0,0,0];
+res=[-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1];
+
+for(var q=1;q<14;q++){
+
+document.getElementById("e"+q).innerHTML = "<b></b>";
+
+}
+document.getElementById("Su1").innerHTML = "<b></b>";
+document.getElementById("Bon").innerHTML = "<b></b>";
+document.getElementById("Tot").innerHTML = "<b></b>";
+}
+</script>
+</head>
+<body>
+<div id="mainframe">
+<div id="selected">
+<img id="si1" src="empty.png" class="wuerfel" onclick="moveback(1);"/>
+<img id="si2" src="empty.png" class="wuerfel" onclick="moveback(2);"/>
+<img id="si3" src="empty.png" class="wuerfel" onclick="moveback(3);"/>
+<img id="si4" src="empty.png" class="wuerfel" onclick="moveback(4);"/>
+<img id="si5" src="empty.png" class="wuerfel" onclick="moveback(5);"/>
+</div>
+<div id="try">
+<div id="gewuerfelt">
+<img id="gi1" src="empty.png" class="wuerfel" onclick="move(1);"/>
+<img id="gi2" src="empty.png" class="wuerfel" onclick="move(2);"/>
+<img id="gi3" src="empty.png" class="wuerfel" onclick="move(3);"/>
+<img id="gi4" src="empty.png" class="wuerfel" onclick="move(4);"/>
+<img id="gi5" src="empty.png" class="wuerfel" onclick="move(5);"/>
+</div>
+<div id="button">
+<input type="button" id="go" onclick="go();" value="Wuerfeln"/>
+</div>
+<div class="clearer"></div>
+</div>
+<div id="ergebnisse">
+<table id="tabelle">
+<tr><td class="art">1</td><td class="erg" id="e1"></td><td class="art">3er P.</td><td class="erg" id="e7"></td></tr>
+<tr><td class="art">2</td><td class="erg" id="e2"></td><td class="art">4er P.</td><td class="erg" id="e8"></td></tr>
+<tr><td class="art">3</td><td class="erg" id="e3"></td><td class="art">FH</td><td class="erg" id="e9"></td></tr>
+<tr><td class="art">4</td><td class="erg" id="e4"></td><td class="art">Kl. Str.</td><td class="erg" id="e10"></td></tr>
+<tr><td class="art">5</td><td class="erg" id="e5"></td><td class="art">Gr. Str.</td><td class="erg" id="e11"></td></tr>
+<tr><td class="art">6</td><td class="erg" id="e6"></td><td class="art">Kniffel</td><td class="erg" id="e12"></td></tr>
+<tr><td class="art">Bon</td><td class="erg" id="Bon"></td><td class="art">Chance</td><td class="erg" id="e13"></td></tr>
+<tr id="ll"><td class="art">S1</td><td class="erg" id="Su1"></td><td class="art">Total</td><td class="erg" id="Tot"></td></tr>
+</table>
+</div>
+<br><br><br><br>
+&copy;Linus Wahnschaffe 2017
+</div>
+</body>
+</html>
